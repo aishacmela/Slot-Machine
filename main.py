@@ -7,21 +7,24 @@ MAX_BET = 100
 MIN_BET = 1
 
 ROWS = 3
-COLUMN = 3
+COLUMN = 3\
+
+JACKPOT_MULTIPLIER = 10
+JACKPOT_CHANCE = 0.1 
 
 #defines the frequency of each symbol
 symbol_count= {
-    "A" : 2,
-    "B" : 4,
-    "C" : 6,
-    "D" : 8
+    "🍒" : 2,
+    "⭐️" : 4,
+    "🍋" : 6,
+    "🍓" : 8
 }
 
 symbol_payout = {
-    "A" : 5,
-    "B": 4,
-    "C": 3,
-    "D": 2
+    "⭐️" : 5,
+    "🍒": 4,
+    "🍋": 3,
+    "🍓": 2
 }
 
 def check_winnngs(columns, lines, bet,payout):
@@ -128,6 +131,11 @@ def main():
 
         #check winnings\
         winnings , winning_lines = check_winnngs(slots, lines, bet, symbol_payout)
+
+        if random.random() <  JACKPOT_CHANCE:
+            print(f"🎉 JACKPOT! 🎉 All winnings are multiplied by,{JACKPOT_MULTIPLIER}")
+            winnings *= JACKPOT_MULTIPLIER
+
         balance += winnings 
 
         #display results
