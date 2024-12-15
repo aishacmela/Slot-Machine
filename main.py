@@ -1,7 +1,7 @@
 import random
 
 
-#define in capital letters so that number is constant througout the game
+#constants to define the rukes of the game 
 MAX_LINES = 3
 MAX_BET = 100
 MIN_BET = 1
@@ -9,6 +9,7 @@ MIN_BET = 1
 ROWS = 3
 COLUMN = 3
 
+#defines the frequency of each symbol
 symbol_count= {
     "A" : 2,
     "B" : 4,
@@ -16,29 +17,32 @@ symbol_count= {
     "D" : 8
 }
 
+#sumilate slot spinning  by randomly generating grid of symbols
 def get_slot_machine_spin(rows, cols, symbols):
-    all_symbols= []
-    #items is to give us all the values stored ina dictionary
+    all_symbols = []
     for symbol, symbol_count in symbols.items():
         for _ in range(symbol_count):
-            all_symbols.append(symbols)
-    
-    #define columns list
-    column = []
-    #generate column for each column we have
+            all_symbols.append(symbol)  
+
+    columns = []
     for _ in range(cols):
-        #pick random values for wach colum and row we will have
+        current_symbols = all_symbols[:]  # Copy the symbol list for each column
         column = []
-        current_symbols = all_symbols[:]
         for _ in range(rows):
-            value = random.choice(all_symbols)
+            value = random.choice(current_symbols)
             current_symbols.remove(value)
-            column.apppend(value)
-        
-        columns.append(column)
+            column.append(value)
+        columns.append(column)  # Add the generated column to the result
     return columns
 
-def print_slot_machine(columns)
+
+def print_slot_machine(columns):
+    for row in range(len(columns[0])):
+        for col in columns: #for every column, print each row symbol
+            print(col[row], end=" | ")
+        print()
+
+
 
 #gets deposit from the user
 def deposit():
@@ -72,7 +76,7 @@ def get_number_of_lines():
 
 def get_bet():
     while True:
-        bet = input("How Mich would you like to bet with R:")
+        bet = input("How Much would you like to bet with R:")
         if bet.isdigit():
             bet = int(bet)
             if MIN_BET <= bet <= MAX_BET:
@@ -86,17 +90,34 @@ def get_bet():
 #define the main function for its reusability 
 def main():
     balance = deposit()
-    lines = get_number_of_lines()
     while True:
-        
-        bet = get_bet()
-        total_bet = bet * lines
-        if  total_bet > balance:
-            print(f"You do not have enough to bet that amount, your current balance is R{balance} and you are betting R{total_bet} ")
-        else:
-            break
-    
-    print(f"You are betting {bet} on {lines} lines. The Total bet is {total_bet}")
+        lines = get_number_of_lines()
+        while True:
+            bet = get_bet()
+            total_bet = bet * lines
+            if total_bet > balance:
+                print(f"You do not have enough to bet that amount. Your current balance is R{balance}, but your total bet is R{total_bet}.")
+            else:
+                break
 
+        print(f"You are betting R{bet} on {lines} lines. Total bet is R{total_bet}.")
+
+        # Deduct the bet from the balance
+        balance -= total_bet
+
+        # Spin the slot machine
+        slots = get_slot_machine_spin(ROWS, COLUMN, symbol_count)
+        print_slot_machine(slots)
+
+        # Placeholder for win/loss logic
+        print(f"Your balance is: R{balance}")
+
+        if balance <= 0:
+            print("You have run out of funds! Game Over.")
+            break
+
+        play_again = input("Do you want to play again? (yes/no): ").lower()
+        if play_again != "yes":
+            break
 
 main()
