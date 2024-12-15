@@ -17,6 +17,23 @@ symbol_count= {
     "D" : 8
 }
 
+symbol_payout = {
+    "A" : 5,
+    "B": 4,
+    "C": 3,
+    "D": 2
+}
+
+def check_winnngs(columns, lines, bet,payout):
+    winnings = 0
+    winning_lines = []
+    for line in range(lines): #check the number of lines the player bet on
+        symbol = columns[0][line] #get the first symbol in the row
+        if all(col[line] == symbol for col in columns):
+            winnings += payout[symbol] * bet
+            winning_lines.append(line + 1)
+    return winnings, winning_lines
+
 #sumilate slot spinning  by randomly generating grid of symbols
 def get_slot_machine_spin(rows, cols, symbols):
     all_symbols = []
@@ -108,6 +125,18 @@ def main():
         # Spin the slot machine
         slots = get_slot_machine_spin(ROWS, COLUMN, symbol_count)
         print_slot_machine(slots)
+
+        #check winnings\
+        winnings , winning_lines = check_winnngs(slots, lines, bet, symbol_payout)
+        balance += winnings 
+
+        #display results
+        print(f"You won R{winnings}!")
+        if winning_lines:
+            print(f"You won on line: {', '.join(map(str, winning_lines))}")
+        else:
+            print("No winning lines this time")
+
 
         # Placeholder for win/loss logic
         print(f"Your balance is: R{balance}")
